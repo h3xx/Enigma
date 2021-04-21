@@ -358,6 +358,20 @@ AM_COND_IF([SYSTEM_ENET],
 		   PKG_CHECK_MODULES(LIBENET, [libenet], ,AC_MSG_ERROR([libenet not found!])),
 		   AC_CONFIG_SUBDIRS([lib-src/enet]))
 
+dnl ----------------------------------------------------------
+dnl Decide whether to use system lua
+dnl ----------------------------------------------------------
+
+AC_MSG_CHECKING(whether to use system lua)
+AC_ARG_WITH(system-enet,
+  AS_HELP_STRING(--with-system-enet, Use system enet), system_enet=$withval,
+  system_enet=no
+)
+AM_CONDITIONAL([SYSTEM_LUA], [test "x$system_lua" = xyes])
+AM_COND_IF([SYSTEM_LUA],
+           PKG_CHECK_MODULES(LIBLUA, [liblua], ,AC_MSG_ERROR([liblua not found!])),
+           AC_CONFIG_SUBDIRS([lib-src/lua]))
+
 
 
 dnl ----------------------------------------------------------
@@ -436,7 +450,6 @@ AC_CONFIG_FILES([Makefile m4/Makefile  intl/Makefile
 	   etc/Makefile
            lib-src/Makefile
 	   lib-src/oxydlib/Makefile
-	   lib-src/lua/Makefile
            lib-src/enigma-core/Makefile
 	   src/Makefile
 	   tools/Makefile
