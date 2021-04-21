@@ -366,11 +366,15 @@ AM_COND_IF([SYSTEM_LUA],
            AS_IF([test "x$LUA_NAME" = "x"],
                  [AC_ERROR([Could not find lua via pkg-config!]) ])
 
+           LIBS_LUA="`$PKG_CONFIG --libs $LUA_NAME`"
 
 
            ],
            # Else, use the bundled version
+           [
            AC_CONFIG_FILES([lib-src/lua/Makefile])
+           LIBS_LUA="lib-src/lua/liblua.a"
+           ]
 )
 
 dnl ----------------------------------------
