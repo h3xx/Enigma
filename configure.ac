@@ -365,11 +365,13 @@ dnl ----------------------------------------------------------
 AC_MSG_CHECKING(whether to use system lua)
 AC_ARG_WITH(system-lua,
   AS_HELP_STRING(--with-system-lua, Use system lua), system_lua=$withval
+  system_lua=no
 )
 AM_CONDITIONAL([SYSTEM_LUA], [test "x$system_lua" = xyes])
 AM_COND_IF([SYSTEM_LUA],
            PKG_CHECK_MODULES(LIBLUA, [liblua], ,AC_MSG_ERROR([liblua not found!])),
-           AC_CONFIG_SUBDIRS([lib-src/lua]))
+           AC_CONFIG_FILES([lib-src/lua/Makefile])
+)
 
 
 
@@ -473,6 +475,7 @@ Enigma is now configured
    Linker options:      $LDFLAGS
    Languages:		$ALL_LINGUAS
    System enet:		$system_enet
+   System lua:          $system_lua
 
 If these values seem to make sense, you can now run make.
 ])
