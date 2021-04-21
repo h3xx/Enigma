@@ -308,22 +308,6 @@ else
 	AC_MSG_RESULT(no)
 fi
 
-dnl ----------------------------------------
-dnl Check for C++ Lua
-dnl ----------------------------------------
-
-AC_MSG_CHECKING(whether to build lua using c++)
-AC_ARG_ENABLE(cxxlua,
-  AS_HELP_STRING(--enable-cxxlua, Build Lua with C++ [default=yes]),,enable_cxxlua=yes)
-if test "x$enable_cxxlua" = xyes; then
-  CXXFLAGS="$CXXFLAGS -DCXXLUA"
-  AC_MSG_RESULT(yes)
-else
-  AC_MSG_RESULT(no)
-fi
-
-AM_CONDITIONAL(CXXLUA, test x$enable_cxxlua = xyes)
-
 dnl ----------------------------------------------------------
 dnl Check whether compiler warnings should be emitted
 dnl ----------------------------------------------------------
@@ -369,10 +353,44 @@ AC_ARG_WITH(system-lua,
             [system_lua=no])
 AM_CONDITIONAL([SYSTEM_LUA], [test "x$system_lua" = xyes])
 AM_COND_IF([SYSTEM_LUA],
-           PKG_CHECK_MODULES(LIBLUA, [liblua], ,AC_MSG_ERROR([liblua not found!])),
+           [
+           # Lua gets different names in different distros :(
+           PKG_PROG_PKG_CONFIG
+           AC_CACHE_CHECK([for lua], [enigma_cv_lua_name],
+                          [for lua_name in lua-5.1 lua5.1 lua51 luajit lua
+                          do
+                              PKG_CHECK_EXISTS([$lua_name], [enigma_cv_lua_name=$lua_name ; break])
+                          done
+                          ])
+           LUA_NAME=$enigma_cv_lua_name
+           AS_IF([test "x$LUA_NAME" = "x"],
+                 [AC_ERROR([Could not find lua via pkg-config!]) ])
+
+
+
+           ],
+           # Else, use the bundled version
            AC_CONFIG_FILES([lib-src/lua/Makefile])
 )
 
+dnl ----------------------------------------
+dnl Check for C++ Lua
+dnl ----------------------------------------
+
+AC_MSG_CHECKING(whether to build lua using c++)
+AC_ARG_ENABLE(cxxlua,
+  AS_HELP_STRING(--enable-cxxlua, Build Lua with C++ [default=yes]),,enable_cxxlua=yes)
+AM_COND_IF([SYSTEM_LUA],
+           [AC_MSG_RESULT(not building lua)],
+           [if test "x$enable_cxxlua" = xyes; then
+             CXXFLAGS="$CXXFLAGS -DCXXLUA"
+             AC_MSG_RESULT(yes)
+           else
+             AC_MSG_RESULT(no)
+           fi]
+)
+
+AM_CONDITIONAL(CXXLUA, test x$enable_cxxlua = xyes)
 
 
 dnl ----------------------------------------------------------
