@@ -363,9 +363,8 @@ dnl Decide whether to use system lua
 dnl ----------------------------------------------------------
 
 AC_MSG_CHECKING(whether to use system lua)
-AC_ARG_WITH(system-enet,
-  AS_HELP_STRING(--with-system-enet, Use system enet), system_enet=$withval,
-  system_enet=no
+AC_ARG_WITH(system-lua,
+  AS_HELP_STRING(--with-system-lua, Use system lua), system_lua=$withval
 )
 AM_CONDITIONAL([SYSTEM_LUA], [test "x$system_lua" = xyes])
 AM_COND_IF([SYSTEM_LUA],
