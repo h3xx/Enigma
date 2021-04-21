@@ -364,9 +364,9 @@ dnl ----------------------------------------------------------
 
 AC_MSG_CHECKING(whether to use system lua)
 AC_ARG_WITH(system-lua,
-  AS_HELP_STRING(--with-system-lua, Use system lua), system_lua=$withval
-  system_lua=no
-)
+            AC_HELP_STRING([--with-system-lua],[Use system lua instead of builtin]),
+            [if test "$withval" = yes; then system_lua=yes; else system_lua=no; fi],
+            [system_lua=no])
 AM_CONDITIONAL([SYSTEM_LUA], [test "x$system_lua" = xyes])
 AM_COND_IF([SYSTEM_LUA],
            PKG_CHECK_MODULES(LIBLUA, [liblua], ,AC_MSG_ERROR([liblua not found!])),
